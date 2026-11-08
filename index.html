@@ -285,5 +285,98 @@ footer .sign{font-family:var(--display);font-style:italic;font-size:30px;font-we
 })();
 </script>
 
+<style>
+.music{position:fixed;z-index:60;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  width:54px;height:54px;border-radius:50%;border:0;background:var(--ink);color:#fff;display:grid;place-items:center;cursor:pointer;
+  box-shadow:0 6px 18px rgba(23,19,26,.3);transition:transform .15s}
+.music:active{transform:scale(.94)}
+.music:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
+.music svg{width:24px;height:24px}
+.music .off{display:none}
+.music[aria-pressed="false"] .on{display:none}.music[aria-pressed="false"] .off{display:block}
+.music[aria-pressed="true"]{background:var(--pink);color:var(--ink);animation:beat 1s ease-in-out infinite}
+@keyframes beat{50%{transform:scale(1.07)}}
+</style>
+<button class="music" id="music" type="button" aria-pressed="false" aria-label="Reproducir música">
+  <svg class="on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M9 18V5l12-2v13" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+  <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3" fill="currentColor"/><circle cx="18" cy="16" r="3" fill="currentColor"/><path d="M3 3l18 18"/></svg>
+</button>
+<script>
+(function(){
+  // "Feliz cumpleaños" (melodía tradicional, dominio público) en arreglo estilo mariachi, generado con Web Audio
+  function hz(m){return 440*Math.pow(2,(m-69)/12)}
+  var BEAT=.34, P=5; // la anacrusa de la melodía empieza en el tiempo 5 (después de la fanfarria)
+  var intro=[[0,72,.5],[.5,76,.5],[1,79,1],[2,76,.5],[2.5,79,.5],[3,84,2]];
+  var mel=[[67,.75],[67,.25],[69,1],[67,1],[72,1],[71,2],
+           [67,.75],[67,.25],[69,1],[67,1],[74,1],[72,2],
+           [67,.75],[67,.25],[79,1],[76,1],[72,1],[71,1],[69,1],
+           [77,.75],[77,.25],[76,1],[72,1],[74,1],[72,3]];
+  var third={67:64,69:65,71:67,72:64,74:71,76:72,77:74,79:76,84:79};
+  var C={r:36,f:43,v:[60,64,67,72]},G={r:43,f:38,v:[59,62,67,71]},F={r:41,f:36,v:[60,65,69,72]};
+  var bars=[C,C, C,G,G,C,C,F,C,C]; // 2 compases de fanfarria + 8 de canción
+  var TOTAL=6+24+3;
+  var ctx=null,master=null,noise=null,timer=null,playing=false;
+  var btn=document.getElementById('music');
+  function vib(o,t,rate,cents){var l=ctx.createOscillator(),lg=ctx.createGain();l.frequency.value=rate;lg.gain.setValueAtTime(0,t);
+    lg.gain.linearRampToValueAtTime(cents,t+.18);l.connect(lg);lg.connect(o.detune);l.start(t);return l}
+  function horn(m,t,d,v){ // trompeta
+    var g=ctx.createGain(),lp=ctx.createBiquadFilter();lp.type='lowpass';lp.Q.value=2;
+    lp.frequency.setValueAtTime(900,t);lp.frequency.linearRampToValueAtTime(3200,t+.05);lp.frequency.setTargetAtTime(2200,t+.08,.1);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.03);g.gain.setValueAtTime(v*.8,t+Math.max(.05,d-.06));g.gain.linearRampToValueAtTime(0,t+d+.04);
+    [-6,6].forEach(function(dt){var o=ctx.createOscillator();o.type='sawtooth';o.frequency.value=hz(m);o.detune.value=dt;var l=vib(o,t,5.5,7);
+      o.connect(lp);o.start(t);o.stop(t+d+.08);l.stop(t+d+.08)});
+    lp.connect(g);g.connect(master);
+  }
+  function violin(m,t,d,v){
+    var o=ctx.createOscillator(),g=ctx.createGain(),lp=ctx.createBiquadFilter();o.type='sawtooth';o.frequency.value=hz(m);lp.type='lowpass';lp.frequency.value=4200;
+    var l=vib(o,t,6.2,12);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.07);g.gain.setValueAtTime(v,t+Math.max(.08,d-.05));g.gain.linearRampToValueAtTime(0,t+d+.1);
+    o.connect(lp);lp.connect(g);g.connect(master);o.start(t);o.stop(t+d+.12);l.stop(t+d+.12);
+  }
+  function guitarron(m,t,d){
+    var o=ctx.createOscillator(),o2=ctx.createOscillator(),g=ctx.createGain(),lp=ctx.createBiquadFilter();o.type='sawtooth';o2.type='triangle';
+    o.frequency.value=hz(m);o2.frequency.value=hz(m+12);lp.type='lowpass';lp.frequency.setValueAtTime(1400,t);lp.frequency.exponentialRampToValueAtTime(250,t+.25);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.45,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+d);
+    o.connect(lp);o2.connect(lp);lp.connect(g);g.connect(master);o.start(t);o2.start(t);o.stop(t+d+.02);o2.stop(t+d+.02);
+  }
+  function pluck(m,t,v){var o=ctx.createOscillator(),g=ctx.createGain(),lp=ctx.createBiquadFilter();o.type='square';o.frequency.value=hz(m);
+    lp.type='lowpass';lp.frequency.setValueAtTime(4000,t);lp.frequency.exponentialRampToValueAtTime(900,t+.12);
+    g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(lp);lp.connect(g);g.connect(master);o.start(t);o.stop(t+.22)}
+  function strum(ch,t,up){ // vihuela / guitarra
+    var v=ch.v.slice();if(up)v.reverse();v.forEach(function(m,i){pluck(m,t+i*.014,.05)});
+    var s=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=noise;f.type='bandpass';f.frequency.value=3500;
+    g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.001,t+.06);s.connect(f);f.connect(g);g.connect(master);s.start(t);s.stop(t+.07);
+  }
+  function song(){
+    var t0=ctx.currentTime+.08;
+    intro.forEach(function(n){var t=t0+n[0]*BEAT,d=n[2]*BEAT;horn(n[1],t,d,.11);horn(third[n[1]],t,d,.07)});
+    var b=P;mel.forEach(function(n,i){var t=t0+b*BEAT,d=n[1]*BEAT,last=i===mel.length-1;
+      horn(n[0],t,d,.12);horn(third[n[0]],t,d,.075);violin(n[0]+12,t,d,.035);b+=n[1]});
+    bars.forEach(function(ch,i){var bs=t0+i*3*BEAT,last=i===bars.length-1;
+      guitarron(i%2&&!last?ch.f:ch.r,bs,BEAT*1.6);
+      if(!last){strum(ch,bs+BEAT,false);strum(ch,bs+BEAT*1.5,true);strum(ch,bs+BEAT*2,false)}
+      else{strum(ch,bs,false);strum(ch,bs+BEAT*2.5,false)}});
+    // acorde final de trompetas y violines
+    var end=t0+(6+21)*BEAT;[64,67].forEach(function(m){horn(m,end,3*BEAT,.06)});violin(84,end,3*BEAT,.04);violin(79,end,3*BEAT,.03);
+    timer=setTimeout(function(){if(playing)song()},(TOTAL*BEAT+1.2)*1000);
+  }
+  function start(){
+    try{
+      if(!ctx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;ctx=new AC();
+        noise=ctx.createBuffer(1,ctx.sampleRate*.2,ctx.sampleRate);var d=noise.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;}
+      if(ctx.state==='suspended')ctx.resume();
+      master=ctx.createGain();master.gain.value=.85;var comp=ctx.createDynamicsCompressor();master.connect(comp);comp.connect(ctx.destination);
+      playing=true;btn.setAttribute('aria-pressed','true');btn.setAttribute('aria-label','Pausar música');song();
+    }catch(e){}
+  }
+  function stop(){
+    playing=false;clearTimeout(timer);btn.setAttribute('aria-pressed','false');btn.setAttribute('aria-label','Reproducir música');
+    if(master){try{master.gain.setTargetAtTime(0,ctx.currentTime,.05);var m=master;setTimeout(function(){m.disconnect()},300)}catch(e){}}
+  }
+  btn.addEventListener('click',function(){playing?stop():start()});
+  var envEl=document.getElementById('env'),auto=false;
+  if(envEl)envEl.addEventListener('click',function(){if(!auto&&!playing&&envEl.classList.contains('open')){auto=true;start()}});
+})();
+</script>
+
 </body>
 </html>
