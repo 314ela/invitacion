@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Triple Cumpleaños de Azucena, Nahomy y Rodolfo Ramos. Sábado 28 de noviembre, 3:00 p.m., Salón Esmeralda.">
+<meta property="og:title" content="Triple Cumpleaños">
+<meta property="og:description" content="Azucena, Nahomy y Rodolfo Ramos te invitan. Sábado 28 de noviembre, 3:00 p.m., Salón Esmeralda.">
+<title>Triple Cumpleaños</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..800,100;1,9..144,400..800,100&family=Outfit:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow column like a card in hand — envelope hero, three festejados, countdown, details. Single committed light look. */
+:root{
+  --paper:#FFF6F8; --card:#FFFFFF; --ink:#17131A; --muted:#6E5F67;
+  --pink:#EE7FA8; --pink-soft:#FBE1EA; --red:#D3263A; --line:#F0D7E0;
+  --display:"Fraunces", Georgia, "Times New Roman", serif;
+  --body:"Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+img{max-width:100%}
+[hidden]{display:none!important}
+html{background:var(--paper)}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px;overflow-x:hidden}
+.wrap{max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1,h2,.name,.num{font-family:var(--display);font-variation-settings:"SOFT" 100}
+.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:500}
+
+/* ---------- envelope ---------- */
+.hero{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.env{font:inherit;color:inherit;position:relative;width:min(100%,360px);aspect-ratio:1.45;max-width:100%;margin-top:150px;cursor:pointer;border:0;background:none;padding:0;-webkit-tap-highlight-color:transparent}
+.env:focus-visible{outline:3px solid var(--pink);outline-offset:6px;border-radius:12px}
+.env .back{position:absolute;inset:0;background:var(--ink);border-radius:12px}
+.env .letter{position:absolute;left:7%;right:7%;bottom:8%;height:150%;background:var(--card);border-radius:10px;
+  transform:translateY(0);transition:transform .9s cubic-bezier(.2,.8,.2,1) .35s;padding:16px 16px 0;
+  display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 -4px 20px rgba(0,0,0,.12)}
+.env .photo{width:62%;aspect-ratio:1;border-radius:50%;overflow:hidden;border:4px solid var(--pink-soft)}
+.env .photo img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
+.env .letter h1{margin:0;font-size:30px;line-height:1.05;font-weight:700;font-style:italic;letter-spacing:-.01em}
+.env .letter h1 span{color:var(--red)}
+.env .front{position:absolute;inset:0;border-radius:12px;overflow:hidden;pointer-events:none}
+.env .front::before,.env .front::after{content:"";position:absolute;bottom:0;width:60%;height:100%;background:#231d27}
+.env .front::before{left:0;clip-path:polygon(0 0,100% 62%,0 100%)}
+.env .front::after{right:0;background:#2b2430;clip-path:polygon(100% 0,0 62%,100% 100%)}
+.env .bottom{z-index:2;position:absolute;inset:auto 0 0 0;height:62%;background:#1d1820;clip-path:polygon(0 100%,50% 0,100% 100%);border-radius:0 0 12px 12px}
+.env .flap{position:absolute;top:0;left:0;right:0;height:60%;background:#2f2733;clip-path:polygon(0 0,100% 0,50% 100%);
+  transform-origin:top;transition:transform .6s ease,z-index 0s .3s;z-index:3}
+.env .seal{position:absolute;left:50%;top:60%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;z-index:4;
+  background:var(--pink);color:var(--ink);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:26px;
+  box-shadow:0 0 0 4px rgba(238,127,168,.35);transition:opacity .3s,transform .3s}
+/* closed state: letter tucked in */
+.env .letter{z-index:1;clip-path:inset(0 0 0 0 round 10px);transition:transform .9s cubic-bezier(.2,.8,.2,1) .35s,clip-path .9s ease .35s,z-index 0s 0s}
+.env:not(.open) .letter{transform:translateY(40%);clip-path:inset(0 0 40% 0 round 10px)}
+.env.open .letter{z-index:6;transition:transform .9s cubic-bezier(.2,.8,.2,1) .35s,clip-path .9s ease .35s,z-index 0s 1.25s}
+.env .front{z-index:2}
+.env.open .flap{transform:rotateX(180deg);z-index:0}
+.env.open .seal{opacity:0;transform:scale(.6)}
+.env.open .letter{transform:translateY(-2%)}
+.layer-front{z-index:2}
+.lettdate{font-size:14px;font-weight:500;color:var(--muted);border-top:1px solid var(--line);padding-top:8px;margin-top:4px}
+.pretitle{position:absolute;top:30px;left:0;right:0;display:flex;flex-direction:column;gap:6px;align-items:center;transition:opacity .4s}
+.pretitle span:last-child{font-family:var(--display);font-style:italic;font-weight:600;font-size:30px;line-height:1.1}
+.hero:has(.env.open) .pretitle{opacity:0}
+.pretitle em{color:var(--red)}
+.pretitle span:last-child{font-size:38px}
+.hint{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.hint b{font-weight:600;color:var(--ink)}
+.lede{font-family:var(--display);font-style:italic;font-size:21px;line-height:1.35;margin:0;text-wrap:balance;max-width:30ch}
+
+/* ---------- festejados ---------- */
+.people{display:flex;flex-direction:column;gap:16px}
+.section-head{display:flex;flex-direction:column;gap:4px;text-align:center}
+.section-head h2{margin:0;font-size:28px;font-weight:600;font-style:italic}
+.p{position:relative;display:grid;grid-template-columns:118px 1fr;align-items:center;gap:16px;min-height:132px;
+  border-radius:20px;padding:14px 18px 14px 10px;cursor:pointer;border:0;text-align:left;font:inherit;color:inherit;
+  transition:transform .25s ease}
+.p:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.p:active{transform:scale(.98)}
+.p .txt{min-width:0;display:flex;flex-direction:column;gap:4px}
+.p .name{font-size:30px;line-height:1.05;font-weight:700;font-style:italic;letter-spacing:-.01em}
+.p .line{font-size:15px;line-height:1.35}
+.p .chip{align-self:flex-start;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;padding:3px 9px;border-radius:999px;margin-bottom:2px}
+.p .art{display:grid;place-items:center;height:110px}
+.p.az{background:var(--pink-soft)}
+.p.az .chip{background:var(--pink);color:var(--ink)}
+.p.az .art img{height:150px;margin-top:-34px;filter:drop-shadow(0 8px 8px rgba(120,40,70,.22))}
+.p.na{background:var(--ink);color:#fff}
+.p.na .chip{background:#fff;color:var(--ink)}
+.p.na .line{color:#E9E1E6}
+.p.na .art .ring{width:104px;height:104px;border-radius:50%;background:#fff;overflow:hidden;border:4px solid var(--red)}
+.p.na .art img{width:100%;height:100%;object-fit:cover;object-position:40% 15%}
+.p.ro{background:var(--red);color:#fff;grid-template-columns:1fr 132px;padding:14px 8px 14px 20px}
+.p.ro .chip{background:var(--ink);color:#fff}
+.p.ro .line{color:#FFE3E6}
+.p.ro .art{order:2}
+.p.ro .art img{width:150px;max-width:none;margin-right:-10px;filter:drop-shadow(0 8px 8px rgba(0,0,0,.25))}
+.p.wiggle .art img{animation:hop .55s ease}
+@keyframes hop{0%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(-12px) rotate(-5deg)}70%{transform:translateY(0) rotate(4deg)}}
+.tapnote{text-align:center;font-size:13px;color:var(--muted);margin-top:-6px}
+
+/* ---------- countdown ---------- */
+.count{display:flex;flex-direction:column;gap:14px;text-align:center}
+.clock{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cell{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 4px 10px}
+.num{display:block;font-size:34px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.cell:nth-child(1) .num{color:var(--red)}
+.unit{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:500}
+
+/* ---------- details ---------- */
+.details{background:var(--card);border-radius:22px;border:1px solid var(--line);padding:24px 20px;display:flex;flex-direction:column;gap:18px}
+.when{display:grid;grid-template-columns:1.7fr 1fr;gap:12px}
+.when div{display:flex;flex-direction:column;gap:2px}
+.big{font-family:var(--display);font-size:24px;font-weight:600;line-height:1.1}
+.rule{height:1px;background:var(--line)}
+.place .big{font-style:italic}
+.addr{color:var(--muted);font-size:15px;margin-top:2px}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.btn{flex:1 1 170px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 16px;border-radius:999px;
+  font:600 15px var(--body);text-decoration:none;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
+.btn svg{width:18px;height:18px;flex:none}
+.btn.dark{background:var(--ink);color:#fff}
+.btn.pink{background:var(--pink);color:var(--ink)}
+.copy{background:none;border:0;padding:0;font:500 14px var(--body);color:var(--red);text-decoration:underline;text-underline-offset:3px;cursor:pointer;align-self:flex-start}
+
+footer{text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+footer .sign{font-family:var(--display);font-style:italic;font-size:30px;font-weight:600}
+.dots{display:flex;gap:8px}
+.dots i{width:10px;height:10px;border-radius:50%}
+
+#fx{position:fixed;inset:0;pointer-events:none;z-index:50}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:380px){.p{grid-template-columns:96px 1fr}.p.ro{grid-template-columns:1fr 110px}.p .name{font-size:26px}.p.az .art img{height:130px}.p.na .art .ring{width:90px;height:90px}.p.ro .art img{width:130px}}
+</style>
+
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="wrap">
+
+  <section class="hero">
+    <div class="pretitle" aria-hidden="true"><span class="eyebrow">Azucena · Nahomy · Rodolfo</span><span>Triple <em>Cumpleaños</em></span></div>
+    <button class="env" id="env" aria-label="Abrir la invitación">
+      <div class="back"></div>
+      <div class="letter">
+        <div class="photo"><img src="group.jpg" alt="Azucena, Nahomy y Rodolfo juntos"></div>
+        <span class="eyebrow">Estás invitado a un</span>
+        <h1>Triple <span>Cumpleaños</span></h1>
+        <span class="lettdate">Sábado 28 de noviembre · 3:00 p.m.</span>
+      </div>
+      <div class="front"></div>
+      <div class="bottom"></div>
+      <div class="flap"></div>
+      <div class="seal">3</div>
+    </button>
+    <p class="hint" id="hint"><b>Toca el sobre</b> para abrir tu invitación</p>
+    <p class="lede">Tres festejados, mucha alegría y una sola fiesta para celebrarlos juntos.</p>
+  </section>
+
+  <section class="people">
+    <div class="section-head">
+      <h2>Los festejados</h2>
+    </div>
+
+    <button class="p az" data-c="#EE7FA8,#FBE1EA,#F6B3CB">
+      <div class="art"><img src="cat.png" alt="Gato banana"></div>
+      <div class="txt">
+        <span class="name">Azucena</span>
+        <span class="line">Pequeña, tierna, dulce e inteligente.</span>
+      </div>
+    </button>
+
+    <button class="p na" data-c="#17131A,#FFFFFF,#D3263A">
+      <div class="art"><div class="ring"><img src="snoopy.png" alt="Snoopy"></div></div>
+      <div class="txt">
+        <span class="name">Nahomy</span>
+        <span class="line">Amable, dedicada y con un corazón noble.</span>
+      </div>
+    </button>
+
+    <button class="p ro" data-c="#D3263A,#17131A,#FFFFFF">
+      <div class="art"><img src="bocho.png" alt="Bocho rojo"></div>
+      <div class="txt">
+        <span class="name">Rodolfo Ramos</span>
+        <span class="line">¡Arrancando un año más a toda velocidad!</span>
+      </div>
+    </button>
+    <p class="tapnote">Toca a cada festejado para lanzar confeti</p>
+  </section>
+
+  <section class="count" aria-live="polite">
+    <div class="section-head">
+      <span class="eyebrow">Falta poco</span>
+      <h2 id="countTitle">Para la fiesta faltan</h2>
+    </div>
+    <div class="clock">
+      <div class="cell"><span class="num" id="d">--</span><span class="unit">días</span></div>
+      <div class="cell"><span class="num" id="h">--</span><span class="unit">horas</span></div>
+      <div class="cell"><span class="num" id="m">--</span><span class="unit">min</span></div>
+      <div class="cell"><span class="num" id="s">--</span><span class="unit">seg</span></div>
+    </div>
+  </section>
+
+  <section class="details">
+    <div class="when">
+      <div><span class="eyebrow">Sábado</span><span class="big">28 de noviembre</span></div>
+      <div><span class="eyebrow">Hora</span><span class="big">3:00 p.m.</span></div>
+    </div>
+    <div class="rule"></div>
+    <div class="place">
+      <span class="eyebrow">Lugar</span>
+      <div class="big">Salón Esmeralda</div>
+      <div class="addr" id="addr">C. Luis Moya No. 105, Centro, Calera de Víctor Rosales, Zac. 98500</div>
+    </div>
+    <div class="actions">
+      <a class="btn dark" href="https://www.google.com/maps/search/?api=1&query=22.7761180625,-102.572478622" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+        Cómo llegar</a>
+      <a class="btn pink" target="_blank" rel="noopener"
+         href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Triple%20Cumplea%C3%B1os%3A%20Azucena%2C%20Nahomy%20y%20Rodolfo&dates=20261128T150000/20261128T210000&ctz=America/Mexico_City&location=Sal%C3%B3n%20Esmeralda%2C%20C.%20Luis%20Moya%20105%2C%20Centro%2C%20Calera%20de%20V%C3%ADctor%20Rosales%2C%20Zac.&details=%C2%A1Te%20esperamos!">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        Guardar en mi calendario</a>
+    </div>
+    <button class="copy" id="copy" type="button">Copiar dirección</button>
+  </section>
+
+  <footer>
+    <div class="dots"><i style="background:var(--pink)"></i><i style="background:var(--ink)"></i><i style="background:var(--red)"></i></div>
+    <span class="sign">¡Te esperamos!</span>
+    <span class="eyebrow">Azucena · Nahomy · Rodolfo</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  // ---------- confetti ----------
+  var cv=document.getElementById('fx'),ctx=cv.getContext('2d'),parts=[],running=false;
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function size(){var r=window.devicePixelRatio||1;cv.width=innerWidth*r;cv.height=innerHeight*r;ctx.setTransform(r,0,0,r,0,0)}
+  size();addEventListener('resize',size);
+  function burst(x,y,colors,n){
+    if(reduce)return;
+    for(var i=0;i<n;i++){var a=Math.random()*Math.PI*2,v=3+Math.random()*6;
+      parts.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-4,w:6+Math.random()*6,h:4+Math.random()*4,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:colors[i%colors.length],life:0})}
+    if(!running){running=true;requestAnimationFrame(tick)}
+  }
+  function tick(){
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    parts=parts.filter(function(p){return p.life<160&&p.y<innerHeight+20});
+    parts.forEach(function(p){p.life++;p.vy+=.18;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.globalAlpha=Math.max(0,1-p.life/160);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.life*.1+p.r)));ctx.restore()});
+    if(parts.length)requestAnimationFrame(tick);else running=false;
+  }
+  var ALL=['#EE7FA8','#17131A','#D3263A','#FBE1EA'];
+
+  // ---------- envelope ----------
+  var env=document.getElementById('env'),hint=document.getElementById('hint');
+  env.addEventListener('click',function(){
+    var open=env.classList.toggle('open');
+    env.setAttribute('aria-label',open?'Cerrar la invitación':'Abrir la invitación');
+    hint.innerHTML=open?'<b>¡Bienvenido!</b> Desliza para ver los detalles':'<b>Toca el sobre</b> para abrir tu invitación';
+    if(open){var r=env.getBoundingClientRect();setTimeout(function(){burst(r.left+r.width/2,r.top+r.height*.2,ALL,120)},500)}
+  });
+
+  // ---------- festejados ----------
+  document.querySelectorAll('.p').forEach(function(el){
+    el.addEventListener('click',function(e){
+      el.classList.remove('wiggle');void el.offsetWidth;el.classList.add('wiggle');
+      var r=el.getBoundingClientRect();burst(e.clientX||r.left+r.width/2,e.clientY||r.top+r.height/2,el.dataset.c.split(','),60);
+    });
+  });
+
+  // ---------- countdown (28 nov 2026, 3:00 pm hora del centro de México, UTC-6) ----------
+  var target=Date.parse('2026-11-28T15:00:00-06:00');
+  var D=document.getElementById('d'),H=document.getElementById('h'),M=document.getElementById('m'),S=document.getElementById('s'),T=document.getElementById('countTitle');
+  function pad(n){return n<10?'0'+n:''+n}
+  function upd(){
+    var ms=target-Date.now();
+    if(ms<=0){D.textContent=H.textContent=M.textContent=S.textContent='00';T.textContent='¡Hoy es la fiesta!';return}
+    var s=Math.floor(ms/1000);D.textContent=Math.floor(s/86400);H.textContent=pad(Math.floor(s%86400/3600));M.textContent=pad(Math.floor(s%3600/60));S.textContent=pad(s%60);
+  }
+  upd();setInterval(upd,1000);
+
+  // ---------- copiar dirección ----------
+  var cp=document.getElementById('copy'),addr=document.getElementById('addr').textContent;
+  cp.addEventListener('click',function(){
+    function done(){cp.textContent='Dirección copiada';setTimeout(function(){cp.textContent='Copiar dirección'},2000)}
+    try{navigator.clipboard.writeText(addr).then(done,sel)}catch(e){sel()}
+    function sel(){var r=document.createRange();r.selectNodeContents(document.getElementById('addr'));var s=getSelection();s.removeAllRanges();s.addRange(r);cp.textContent='Selecciona y copia la dirección'}
+  });
+})();
+</script>
+
+</body>
+</html>
